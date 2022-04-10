@@ -10,11 +10,11 @@ name: Packages-AutoBuild
 
 on: 
   repository_dispatch:
-  # push: 
-  #   branches:
-  #     - master
-  # schedule:
-  #   - cron: 0 1 */1 * *
+   push: 
+     branches:
+       - master
+   schedule:
+     - cron: 0 1 */1 * *
 
 env:
   REPO_TOKEN: ${{ secrets.REPO_TOKEN }}
