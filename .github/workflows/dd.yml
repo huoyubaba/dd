@@ -8,8 +8,10 @@
 
 name: Packages-AutoBuild
 
-on: 
+on:
+  workflow_dispatch:
   repository_dispatch:
+
    push: 
      branches:
        - master
