@@ -35,7 +35,7 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE
         chmod +x ${{matrix.target}}.sh
-        git clone -b master https://github.com/kenzok8/openwrt-packages.git ${{matrix.target}}
+        git clone -b master https://github.com/huoyubaba/ff.git ${{matrix.target}}
         cd ${{matrix.target}}
         $GITHUB_WORKSPACE/${{matrix.target}}.sh
         $GITHUB_WORKSPACE/Modify.sh
@@ -49,7 +49,7 @@ jobs:
         cd $GITHUB_WORKSPACE/${{matrix.target}}
         git add .
         git commit -m "update $(date +%Y-%m-%d" "%H:%M:%S)"
-        git push --force "https://${{ secrets.ACCESS_TOKEN }}@github.com/kenzok8/openwrt-packages.git"        
+        git push --force "https://${{ secrets.ACCESS_TOKEN }}@github.com/huoyubaba/ff.git"        
         
     - name: Delete workflow runs
       uses: GitRML/delete-workflow-runs@main
