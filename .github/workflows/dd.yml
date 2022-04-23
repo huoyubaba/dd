@@ -1,23 +1,26 @@
-name: Update openwrt-packages
+
+name: small
 
 on:
+  push:
+    paths:
+      - '.github/workflows/small.yml'
+  schedule:
+    - cron: 40 8,23 * * *
+  watch:
+    types: started
   repository_dispatch:
-  workflow_dispatch:
-    inputs:
-      ssh:
-        description: 'SSH connection to Actions'
-        required: false
-        default: 'false'
 
 jobs:
   build:
+    if: github.event.repository.owner.id == github.event.sender.id
     runs-on: Ubuntu-20.04
 
-    name: Update ${{matrix.target}}
+    name: Update small
     strategy:
       fail-fast: false
       matrix:
-        target: [main]
+        target: [master]
         
     steps:
     - name: Checkout
@@ -34,11 +37,13 @@ jobs:
     - name: Clone packages
       run: |
         cd $GITHUB_WORKSPACE
-        chmod +x ${{matrix.target}}.sh
-        git clone -b master https://github.com/kenzok8/openwrt-packages.git ${{matrix.target}}
+        chmod +x small.sh
+        git clone -b master https://github.com/kenzok8/small.git ${{matrix.target}}
         cd ${{matrix.target}}
-        $GITHUB_WORKSPACE/${{matrix.target}}.sh
-        $GITHUB_WORKSPACE/Modify.sh
+        git rm -r --cache * >/dev/null 2>&1 &
+        rm -rf `find ./* -maxdepth 0 -type d ! -name "commit"` >/dev/null 2>&1
+        $GITHUB_WORKSPACE/small.sh
+        $GITHUB_WORKSPACE/diy/Modify.sh
         
     - name: Upload
       env: 
@@ -48,11 +53,10 @@ jobs:
         [ -e $GITHUB_WORKSPACE/README.md ] && cp $GITHUB_WORKSPACE/README.md $GITHUB_WORKSPACE/${{matrix.target}}
         cd $GITHUB_WORKSPACE/${{matrix.target}}
         git add .
-        git commit -m "update $(date +%Y-%m-%d" "%H:%M:%S)"
-        git push --force "https://${{ secrets.ACCESS_TOKEN }}@github.com/huoyubaba/ff.git"        
-        
-    - name: Delete workflow runs
+        git commit -am "update $(date +%Y-%m-%d" "%H:%M:%S)"
+        git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/kenzok8/small.git" HEAD:${{matrix.target}}	
+    - name: Delete old workflow runs
       uses: GitRML/delete-workflow-runs@main
       with:
         retain_days: 1
-        keep_minimum_runs: 0
+        keep_minimum_runs: 3
