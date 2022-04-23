@@ -4,7 +4,7 @@ name: Sync packages
 on:
   push:
     paths:
-      - '.github/workflows/small8.yml'
+      - '.github/workflows/dd.yml'
       - 'diy/**'
   schedule:
     - cron: 35 8,23 * * *
@@ -53,7 +53,7 @@ jobs:
         cd $GITHUB_WORKSPACE/${{matrix.target}}
         git add .
         git commit -am "update $(date +%m-%d" "%H:%M:%S)"
-        git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/kenzok8/small-package.git" HEAD:${{matrix.target}}
+        git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/huoyubaba/dd.git" HEAD:${{matrix.target}}
                
     - name: Delete old workflow runs
       uses: GitRML/delete-workflow-runs@main
